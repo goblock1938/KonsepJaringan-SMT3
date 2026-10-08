@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 250" role="img" aria-labelledby="title desc">
+  <title id="title">Penjumlahan harmonisa 1, 3, dan 5</title>
+  <desc id="desc">Satu periode sin theta ditambah sepertiga sin 3 theta dan seperlima sin 5 theta.</desc>
+  <rect width="640" height="250" fill="#fff"/>
+  <text x="320" y="24" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#1f2937">x(θ) = sin θ + sin 3θ/3 + sin 5θ/5</text>
+  <path d="M80 55V205M80 130H560" stroke="#64748b" stroke-width="1"/>
+  <path d="M80 82H560M80 178H560M200 55V205M320 55V205M440 55V205" stroke="#e2e8f0" stroke-width="1"/>
+  <path d="M80 130 L90 111.8 L100 97 L110 88 L120 85.2 L130 87.3 L140 91.5 L150 95.3 L160 96.7 L170 95.5 L180 92.5 L190 89.6 L200 88.4 L210 89.6 L220 92.5 L230 95.5 L240 96.7 L250 95.3 L260 91.5 L270 87.3 L280 85.2 L290 88 L300 97 L310 111.8 L320 130 L330 148.2 L340 163 L350 172 L360 174.8 L370 172.7 L380 168.5 L390 164.7 L400 163.3 L410 164.5 L420 167.5 L430 170.4 L440 171.6 L450 170.4 L460 167.5 L470 164.5 L480 163.3 L490 164.7 L500 168.5 L510 172.7 L520 174.8 L530 172 L540 163 L550 148.2 L560 130" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+  <g font-family="sans-serif" font-size="12" fill="#475569">
+    <text x="80" y="224" text-anchor="middle">0</text>
+    <text x="200" y="224" text-anchor="middle">π/2</text>
+    <text x="320" y="224" text-anchor="middle">π</text>
+    <text x="440" y="224" text-anchor="middle">3π/2</text>
+    <text x="560" y="224" text-anchor="middle">2π</text>
+    <text x="65" y="61" text-anchor="end">x(θ)</text>
+    <text x="570" y="134">θ</text>
+  </g>
+</svg>
