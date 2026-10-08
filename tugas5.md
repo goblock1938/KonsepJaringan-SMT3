@@ -1,25 +1,26 @@
-# Tugas 5 — Cara Kerja Traceroute dan Mekanisme TTL
+# Tugas 5 — Analisis Traceroute dan Mekanisme TTL
 
-**Traceroute** (disebut `tracert` pada Windows) memperkirakan router yang dilewati paket dari komputer sumber menuju tujuan. Program mengirim rangkaian probe dengan nilai **TTL (Time To Live)** atau **Hop Limit** yang dinaikkan bertahap.
+**Traceroute** (`tracert` pada Windows) adalah alat diagnostik untuk menemukan router atau *hop* yang dilewati paket menuju alamat tujuan. Traceroute juga mengukur waktu pulang-pergi (RTT) ke tiap hop, sehingga membantu mengidentifikasi bagian jalur yang lambat atau tidak merespons.
 
-## Cara kerja TTL
+## TTL (Time To Live)
 
-Pada IPv4, TTL adalah nilai pada header paket yang dibatasi oleh pengirim. Setiap router yang meneruskan paket mengurangi TTL sedikitnya satu. TTL bukan hitung mundur waktu nyata; fungsinya terutama membatasi jumlah hop agar paket yang berputar akibat kesalahan routing tidak beredar selamanya. Jika nilainya mencapai nol, router membuang paket dan biasanya mengirim pesan ICMP **Time Exceeded**.
+TTL adalah field pada header IPv4 yang membatasi jumlah hop yang boleh dilalui paket. Setiap router yang meneruskan paket mengurangi TTL sedikitnya satu. TTL bukan pengukur waktu nyata: fungsinya mencegah paket beredar tanpa batas akibat kesalahan routing. Jika TTL menjadi nol, router membuang paket.
 
-IPv6 menggunakan field **Hop Limit** dengan fungsi serupa, bukan field TTL.
+IPv6 menggunakan field **Hop Limit** dengan fungsi yang sama. Nilai awal TTL/Hop Limit ditetapkan oleh sistem pengirim.
 
-## Proses traceroute
+## Cara traceroute menggunakan TTL dan ICMP
 
-1. Program mengirim probe pertama dengan TTL 1.
-2. Router pertama menguranginya menjadi 0, membuang probe, lalu mengirim ICMP Time Exceeded. Alamat sumber pesan menunjukkan router pertama.
-3. Probe dengan TTL 2 melewati router pertama setelah TTL dikurangi menjadi 1; router kedua kemudian menghabiskannya dan mengirim Time Exceeded.
-4. TTL dinaikkan lagi untuk mengungkap hop berikutnya.
-5. Ketika probe mencapai tujuan, respons yang menandakan tujuan tercapai bergantung pada jenis probe dan implementasi traceroute.
+Traceroute mengirim serangkaian probe dengan nilai TTL yang dimulai dari 1 dan dinaikkan satu per satu:
 
-Traceroute Unix/Linux tradisional lazim mengirim probe UDP ke port tujuan tinggi, sedangkan `tracert` Windows umumnya memakai ICMP Echo Request. Implementasi lain dapat memakai ICMP atau TCP. Firewall mungkin mengizinkan satu jenis probe tetapi memblokir jenis lain.
+1. Probe dengan TTL 1 tiba di router pertama. Router mengurangi TTL menjadi 0, membuang probe, lalu biasanya mengirim pesan **ICMP Time Exceeded** (Type 11, Code 0). Traceroute mencatat alamat router tersebut sebagai hop pertama.
+2. Probe berikutnya dikirim dengan TTL 2. Router pertama menguranginya menjadi 1 dan meneruskannya. Router kedua menghabiskan TTL menjadi 0 dan mengirim ICMP Time Exceeded. Alamatnya dicatat sebagai hop kedua.
+3. Proses diulang dengan TTL 3, 4, dan seterusnya sampai probe mencapai tujuan atau batas hop tercapai.
+4. Saat tujuan menerima probe, ia mengirim respons sesuai jenis probe. Traceroute mengenali respons itu sebagai tanda tujuan tercapai.
 
-## Membaca hasil dan keterbatasan
+**ICMP (Internet Control Message Protocol)** membawa pesan kendali dan kesalahan jaringan. Pesan Time Exceeded mengungkap router yang menghabiskan TTL; pesan Destination Unreachable dapat menunjukkan tujuan atau layanan tidak dapat dicapai. Traceroute Unix/Linux tradisional sering menggunakan probe UDP, sedangkan `tracert` Windows lazim menggunakan ICMP Echo Request. Implementasi lain dapat menggunakan TCP.
 
-Setiap baris biasanya memuat nomor hop, alamat/nama router, serta waktu pulang-pergi dari beberapa probe. Tanda `*` berarti probe tidak menerima jawaban sebelum batas waktu, bukan bukti pasti router atau seluruh koneksi mati. Router dapat memfilter atau membatasi balasan ICMP; jalur balik juga mungkin berbeda. Load balancing dapat membuat probe menampilkan router berbeda pada hop yang sama.
+## Contoh alur
 
-Traceroute membantu memperkirakan lokasi jalur mulai tidak merespons atau mengalami latensi, tetapi satu hasil tidak selalu membuktikan penyebab gangguan. Bandingkan beberapa pengujian, tujuan, dan waktu; jangan menyimpulkan bahwa jalur balik sama dengan jalur paket aplikasi.
+Misalkan host `192.0.2.10` menelusuri rute menuju `198.51.100.20`. Probe TTL 1 dibalas oleh R1 dengan ICMP Time Exceeded. Probe TTL 2 melewati R1, lalu dibalas R2. Probe TTL 3 dibalas R3, dan seterusnya. Ketika salah satu probe mendapat respons dari `198.51.100.20`, tujuan tercapai dan traceroute berhenti.
+
+Setiap hop biasanya menampilkan alamat/nama router dan waktu respons dari beberapa probe. Tanda `*` berarti tidak ada balasan sebelum batas waktu, bukan bukti pasti bahwa router atau seluruh jalur mati. Router dapat menyaring atau membatasi ICMP, jalur balik bisa berbeda, dan load balancing dapat menyebabkan probe menampilkan router berbeda.

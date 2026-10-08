@@ -1,46 +1,17 @@
-# Tugas 1 — Bab 1 dan Standar Protokol pada Teknologi Wi-Fi
+# Tugas 1 — Analisis Alamat IP
 
-## 1. Konsep dasar jaringan komputer
+Soal memberikan alamat IP tanpa subnet mask. Agar network, broadcast, dan rentang host bisa dihitung, jawaban ini **menggunakan subnet mask classful bawaan** sebagai asumsi akademik: Class A `/8`, Class B `/16`, dan Class C `/24`. Dalam jaringan modern yang menggunakan CIDR, alamat IP saja tidak cukup untuk menentukan subnet.
 
-Jaringan komputer adalah kumpulan dua atau lebih perangkat yang saling terhubung untuk bertukar data dan menggunakan sumber daya bersama. Contohnya adalah koneksi internet, berkas, penyimpanan, dan printer.
+Gateway tidak ditentukan oleh alamat IP semata. Untuk melengkapi tabel, gateway diasumsikan memakai **alamat host pertama** pada subnet.
 
-Komponen jaringan terdiri dari **end device** (komputer, ponsel, server, printer), **media transmisi** (kabel tembaga, serat optik, atau gelombang radio), **perangkat perantara** (switch, router, access point), dan **protokol** yang mengatur format serta pertukaran data.
+| No. | IP yang diberikan | Kelas / prefix asumsi | IP Gateway | Host pertama | Host terakhir | Broadcast | IP Network |
+| ---: | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `21.26.8.5` | A `/8` | `21.0.0.1` | `21.0.0.1` | `21.255.255.254` | `21.255.255.255` | `21.0.0.0` |
+| 2 | `212.6.8.3` | C `/24` | `212.6.8.1` | `212.6.8.1` | `212.6.8.254` | `212.6.8.255` | `212.6.8.0` |
+| 3 | `103.24.56.32` | A `/8` | `103.0.0.1` | `103.0.0.1` | `103.255.255.254` | `103.255.255.255` | `103.0.0.0` |
+| 4 | `1.1.1.1` | A `/8` | `1.0.0.1` | `1.0.0.1` | `1.255.255.254` | `1.255.255.255` | `1.0.0.0` |
+| 5 | `172.31.16.8` | B `/16` | `172.31.0.1` | `172.31.0.1` | `172.31.255.254` | `172.31.255.255` | `172.31.0.0` |
 
-Menurut cakupan, **PAN** menghubungkan perangkat pribadi dalam jarak dekat; **LAN** mencakup area terbatas seperti rumah atau gedung; **MAN** mencakup area metropolitan; dan **WAN** menghubungkan area geografis luas. Internet adalah jaringan global yang terdiri dari banyak jaringan saling terhubung.
+**Cara hitung:** alamat network didapat dengan operasi AND antara IP dan subnet mask. Alamat broadcast memiliki seluruh bit host bernilai 1. Host pertama adalah network + 1 dan host terakhir adalah broadcast − 1.
 
-Topologi menggambarkan susunan koneksi perangkat. **Star** menghubungkan perangkat ke satu titik pusat, mudah dikelola tetapi bergantung pada perangkat pusat. **Bus** menggunakan satu jalur bersama, sederhana tetapi rentan pada gangguan jalur utama. **Ring** membentuk jalur melingkar. **Mesh** menyediakan beberapa jalur antarnode sehingga redundan, tetapi memerlukan lebih banyak koneksi.
-
-## 2. Model komunikasi
-
-Model OSI memiliki tujuh lapisan:
-
-| Lapisan | Fungsi ringkas |
-| --- | --- |
-| 7. Application | Layanan jaringan yang digunakan aplikasi, misalnya HTTP dan DNS |
-| 6. Presentation | Representasi data, enkripsi, dan kompresi |
-| 5. Session | Mengatur sesi komunikasi |
-| 4. Transport | Komunikasi antaraplikasi, port, segmentasi; contohnya TCP dan UDP |
-| 3. Network | Pengalamatan logis dan pemilihan rute; contohnya IP |
-| 2. Data Link | Pengiriman frame pada satu link dan alamat MAC |
-| 1. Physical | Pengiriman bit melalui media fisik atau radio |
-
-Model TCP/IP mengelompokkan fungsi tersebut menjadi **Application**, **Transport**, **Internet**, dan **Network Access**. Saat mengirim data, tiap lapisan menambahkan informasi kendali (enkapsulasi); penerima membukanya kembali secara berlapis (dekapsulasi).
-
-## 3. Standar dan protokol Wi-Fi
-
-Wi-Fi adalah teknologi jaringan lokal nirkabel yang terutama mengikuti keluarga standar **IEEE 802.11**. IEEE menetapkan spesifikasi teknis; Wi-Fi Alliance mengelola sertifikasi interoperabilitas dan nama generasi Wi-Fi. Nama Wi-Fi dan angka generasinya bukan pengganti nomor amendemen IEEE.
-
-| Generasi Wi-Fi | Standar IEEE terkait | Pita frekuensi umum | Keterangan |
-| --- | --- | --- | --- |
-| Wi-Fi 4 | 802.11n | 2,4 dan 5 GHz | Mendukung MIMO |
-| Wi-Fi 5 | 802.11ac | 5 GHz | Meningkatkan kapasitas dan laju data |
-| Wi-Fi 6 / 6E | 802.11ax | 2,4 dan 5 GHz; Wi-Fi 6E juga 6 GHz jika diizinkan | Efisien pada jaringan padat; menggunakan OFDMA |
-| Wi-Fi 7 | 802.11be | 2,4, 5, dan 6 GHz sesuai dukungan serta regulasi | Mendukung kanal lebih lebar dan operasi multi-link |
-
-Standar lama antara lain 802.11b/g (2,4 GHz) dan 802.11a (5 GHz). Kemampuan nyata bergantung pada access point dan klien, lebar kanal, jarak, interferensi, jumlah klien, serta regulasi. Kecepatan maksimum standar adalah nilai teoretis, bukan jaminan throughput aplikasi.
-
-Protokol terkait Wi-Fi meliputi **802.11 MAC/PHY** untuk akses kanal dan transmisi radio; **WPA2/WPA3** untuk keamanan dan autentikasi; **DHCP** untuk konfigurasi IP; serta **IP, TCP/UDP, DNS, dan HTTP(S)** yang berjalan di atas koneksi. Gunakan WPA2-AES atau WPA3 bila tersedia; hindari WEP dan WPA/TKIP yang sudah usang.
-
-### Kesimpulan
-
-Jaringan memungkinkan perangkat bertukar data melalui media dan protokol yang disepakati. Wi-Fi merupakan LAN nirkabel berbasis keluarga IEEE 802.11; keamanan, kualitas sinyal, kompatibilitas, dan regulasi sama pentingnya dengan generasi standar.
+**Catatan:** alamat `172.31.16.8` termasuk rentang privat `172.16.0.0/12`. Penentuan alamat gateway pada praktiknya mengikuti konfigurasi jaringan, bukan kelas alamat.
